@@ -1,0 +1,47 @@
+{
+    "type": "AdaptiveCard",
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "version": "1.6",
+    "body": [
+      {
+        "type": "TextBlock",
+        "text": "Create a new Todo",
+        "wrap": true,
+        "weight": "Bolder",
+        "size": "Medium"
+      },
+      {
+        "type": "Input.Text",
+        "id": "title",
+        "isRequired": true,
+        "placeholder": "Enter the title of the todo",
+        "label": "Title",
+        "value": "feed the cats"
+      },
+      {
+        "type": "Input.Text",
+        "id": "description",
+        "isMultiline": true,
+        "placeholder": "Enter the description of the todo",
+        "label": "Description",
+        "maxLength": 300,
+        "value": "",
+        "rows": 3
+      },
+      {
+        "type": "Input.Date",
+        "id": "due_date",
+        "placeholder": "",
+        "label": "Due Date"
+      }
+    ],
+    "actions": [
+      {
+        "type": "Action.Submit",
+        "title": "Submit",
+        "data": {
+          "verb": "SubmitCreateTodo"
+        }
+      }
+    ]
+  }

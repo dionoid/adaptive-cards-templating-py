@@ -1,5 +1,6 @@
 import re
 import json
+from collections import defaultdict
 
 class AdaptiveCardsTemplate:
     EXPRESSION_PATTERN = r'\$\{([^\}]+)\}'
@@ -63,7 +64,7 @@ class AdaptiveCardsTemplate:
             if expr_match:
                 return self._eval_expr(expr_match.group(1), data, root, host, index)
             else:
-                print (f"Invalid $data expression: {data_expr}")
+                print (f"\n*** Invalid $data expression: {data_expr}")
                 return {}
         else:
             return DotDict.wrap_object(data_expr)
@@ -101,10 +102,7 @@ class AdaptiveCardsTemplate:
     # supports ${json(json_string).property}
     @staticmethod
     def _json_func(json_string):
-        try:
-            return DotDict.wrap_object(json.loads(json_string))
-        except Exception:
-            return None
+        return DotDict.wrap_object(json.loads(json_string))
 
     def _eval_expr(self, expr, data, root, host, index):
         expr = self._sanitize_expr(expr.strip())
@@ -117,10 +115,10 @@ class AdaptiveCardsTemplate:
         local_scope['_if'] = self._if_func
         local_scope['_json'] = self._json_func
         try:
-            retval = eval(expr, {"__builtins__": {}}, local_scope)
+            retval = eval(expr, {"__builtins__": {}}, defaultdict(lambda: None, local_scope))
             return retval
         except Exception:
-            print(f"Error evaluating expression: {expr}")
+            print(f"\n*** Error evaluating expression: {expr}")
             return f"${{{expr}}}" # Return the original expression if evaluation fails
         
 class DotDict(dict):

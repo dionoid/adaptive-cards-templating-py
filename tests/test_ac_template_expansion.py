@@ -2,7 +2,7 @@ import json
 import os
 import glob
 import pytest
-from adaptive_cards_templating_py import AdaptiveCardsTemplate
+from src.adaptive_cards_templating_py import AdaptiveCardsTemplate
 
 # Discover all template files in the tests/templates subfolder
 template_files = sorted(glob.glob('tests/templates/*.json'))
@@ -29,7 +29,7 @@ def test_adaptive_card_template_expansion(template_path):
 
     act = AdaptiveCardsTemplate(template)
     expanded = act.expand(data, host_data)
-    print (f"Expanded template for {test_file_name}:\n{json.dumps(expanded, indent=2, ensure_ascii=False)}")
+    print (f"\nExpanded template for {test_file_name}:\n{json.dumps(expanded, indent=2, ensure_ascii=False)}")
 
     expected_path = f'tests/expected_output/{test_file_name}'
     with open(expected_path, 'r') as file:
