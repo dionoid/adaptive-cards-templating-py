@@ -1,0 +1,16 @@
+{
+    "type": "AdaptiveCard",
+    "body": [
+        {
+            "type": "TextBlock",
+            "text": "${json(message).release.name}"
+        },
+        {
+            "$data": "${items}",
+            "$when": "${if(priceChange == 0, false, true)}",
+            "type": "TextBlock",
+            "text": "${title} (${$index + 1}: ${$root.title}, host: ${$host.env})",
+            "color": "${if(priceChange > 0, 'good', 'attention')}"
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+{
+    "type": "AdaptiveCard",
+    "$data": {
+        "employee": {
+            "name": "Matt",
+            "manager": { "name": "Thomas" },
+            "peers": [{
+                "name": "Andrew" 
+            }, { 
+                "name": "Lei"
+            }, { 
+                "name": "Mary Anne"
+            }, { 
+                "name": "Adam"
+            }]
+        }
+    },
+    "body": [
+        {
+            "type": "TextBlock",
+            "text": "Hi ${employee.name}! Here's a bit about your org..."
+        },
+        {
+            "type": "TextBlock",
+            "text": "Your manager is: ${employee.manager.name}"
+        },
+        {
+            "type": "TextBlock",
+            "text": "The first 3 of your peers are: ${employee.peers[0].name}, ${employee.peers[1].name}, ${employee.peers[2].name}"
+        },
+        {
+            "type": "Container",
+            "$when": "${if(employee.peers.length > 3, true, false)}",
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "text": "You have more than 3 peers!"
+                },
+                {
+                    "type": "FactSet",
+                    "facts": [
+                        {
+                            "$data": "${employee.peers}",
+                            "title": "${name}"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

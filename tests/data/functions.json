@@ -1,0 +1,14 @@
+{
+    "title": "Main Title",
+    "message": "{\"type\":\"Deployment\",\"buildId\":\"9542982\",\"releaseId\":\"129\",\"buildNumber\":\"20180504.3\",\"release\":{\"name\":\"Release-104\"},\"repoProvider\":\"GitHub\"}",
+    "items": [
+        {"title": "Item 1", "priceChange": 3},
+        {"title": "Item 2", "priceChange": -4},
+        {"title": "Item 3", "priceChange": 0}
+    ],
+    "strings": [
+        "one",
+        "two",
+        "three"
+    ]
+}

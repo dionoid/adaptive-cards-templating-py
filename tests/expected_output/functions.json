@@ -1,0 +1,19 @@
+{
+    "type": "AdaptiveCard",
+    "body": [
+      {
+        "type": "TextBlock",
+        "text": "Release-104"
+      },
+      {
+        "type": "TextBlock",
+        "text": "Item 1 (1: Main Title, host: prod)",
+        "color": "good"
+      },
+      {
+        "type": "TextBlock",
+        "text": "Item 2 (2: Main Title, host: prod)",
+        "color": "attention"
+      }
+    ]
+  }

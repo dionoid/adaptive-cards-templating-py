@@ -1,0 +1,43 @@
+{
+  "type": "AdaptiveCard",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Hi Matt! Here's a bit about your org..."
+    },
+    {
+      "type": "TextBlock",
+      "text": "Your manager is: Thomas"
+    },
+    {
+      "type": "TextBlock",
+      "text": "The first 3 of your peers are: Andrew, Lei, Mary Anne"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "You have more than 3 peers!"
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Andrew"
+            },
+            {
+              "title": "Lei"
+            },
+            {
+              "title": "Mary Anne"
+            },
+            {
+              "title": "Adam"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
