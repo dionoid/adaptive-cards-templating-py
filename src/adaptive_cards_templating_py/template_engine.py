@@ -2,19 +2,28 @@ import re
 import json
 from collections import defaultdict
 
-class AdaptiveCardsTemplate:
+class Template:
     EXPRESSION_PATTERN = r'\$\{([^\}]+)\}'
 
     def __init__(self, template: dict):
         self.template = template
 
-    def expand(self, data: dict, host: dict = None):
-        # check for inline data in the root
+    def expand(self, context: dict = None):
+        context = context or {}
+    
+        # Extract root data from context
+        root_data = context.get('$root', {})
+        
+        # Check for inline data in the root
         if '$data' in self.template:
-            data = self.template['$data']
-        data = DotDict.wrap_object(data or {})
-        host = DotDict.wrap_object(host or {})
-        return self._expand(self.template, data, data, host, 0)
+            root_data = self.template['$data']
+            
+        # Extract host data from context
+        host_data = context.get('$host', {})
+
+        root_data = DotDict.wrap_object(root_data or {})
+        host_data = DotDict.wrap_object(host_data or {})
+        return self._expand(self.template, root_data, root_data, host_data, 0)
 
     def _expand(self, node, data, root, host, index):
         if isinstance(node, dict):
@@ -116,6 +125,8 @@ class AdaptiveCardsTemplate:
         local_scope['_json'] = self._json_func
         try:
             retval = eval(expr, {"__builtins__": {}}, defaultdict(lambda: None, local_scope))
+            if retval is None:
+                return f"${{{expr}}}"
             return retval
         except Exception:
             print(f"\n*** Error evaluating expression: {expr}")

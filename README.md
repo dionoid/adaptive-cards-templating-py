@@ -29,7 +29,7 @@ Here's a quick example of how to use the library:
 
 ```python
 import json
-from adaptive_cards_templating_py import AdaptiveCardsTemplate
+from adaptive_cards_templating_py import Template
 
 # Define a template
 template_json = {
@@ -43,11 +43,13 @@ template_json = {
 }
 
 # Create a Template instance
-template = AdaptiveCardsTemplate(template_json)
+template = Template(template_json)
 
 # Expand the template with data
 data = {
-    "message": "Hello, Adaptive Cards!"
+    "$root": {
+        "message": "Hello, Adaptive Cards!"
+    }
 }
 card = template.expand(data)
 

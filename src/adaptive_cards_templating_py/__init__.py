@@ -1,3 +1,3 @@
-from .template_engine import AdaptiveCardsTemplate
+from .template_engine import Template
 
-__all__ = ["AdaptiveCardsTemplate"]
+__all__ = ["Template"]
