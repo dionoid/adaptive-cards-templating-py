@@ -5,8 +5,9 @@ from collections import defaultdict
 class Template:
     EXPRESSION_PATTERN = r'\$\{([^\}]+)\}'
 
-    def __init__(self, template: dict):
+    def __init__(self, template: dict, undefined_field_value_substitution=None):
         self.template = template
+        self.undefined_field_value_substitution = undefined_field_value_substitution
 
     def expand(self, context: dict = None):
         context = context or {}
@@ -114,7 +115,7 @@ class Template:
         return DotDict.wrap_object(json.loads(json_string))
 
     def _eval_expr(self, expr, data, root, host, index):
-        expr = self._sanitize_expr(expr.strip())
+        expr_sanitized = self._sanitize_expr(expr.strip())
         local_scope = {}
         if isinstance(data, dict):
             local_scope.update(data)
@@ -124,12 +125,12 @@ class Template:
         local_scope['_if'] = self._if_func
         local_scope['_json'] = self._json_func
         try:
-            retval = eval(expr, {"__builtins__": {}}, defaultdict(lambda: None, local_scope))
-            if retval is None:
-                return f"${{{expr}}}"
-            return retval
+            eval_result = eval(expr_sanitized, {"__builtins__": {}}, defaultdict(lambda: None, local_scope))
+            if eval_result is None:
+                return f"${{{expr}}}" if self.undefined_field_value_substitution is None else self.undefined_field_value_substitution
+            return eval_result
         except Exception:
-            print(f"\n*** Error evaluating expression: {expr}")
+            print(f"\n*** Error evaluating expression: {expr} (sanitized: {expr_sanitized})")
             return f"${{{expr}}}" # Return the original expression if evaluation fails
         
 class DotDict(dict):

@@ -27,7 +27,7 @@ def test_adaptive_card_template_expansion(template_path):
         with open(host_data_path, 'r') as file:
             host_data = json.load(file)
 
-    act = Template(template)
+    act = Template(template) #, undefined_field_value_substitution='')
     expanded = act.expand({'$root': root_data, '$host': host_data })
     print (f"\nExpanded template for {test_file_name}:\n{json.dumps(expanded, indent=2, ensure_ascii=False)}")
 
