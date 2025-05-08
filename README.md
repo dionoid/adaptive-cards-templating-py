@@ -1,4 +1,4 @@
-# AdaptiveCards Templating for Python
+# Adaptive Cards Templating for Python
 
 This library largely implements the JSON-to-JSON Adaptive Cards Template language for Python. It allows you to dynamically expand Adaptive Card templates using data and host-specific information.
 
