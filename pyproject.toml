@@ -1,6 +1,6 @@
 [project]
 name = "adaptive_cards_templating_py"
-version = "0.1.3"
+version = "0.1.4"
 description = "This library largely implements the JSON-to-JSON Adaptive Cards Template language for Python. Most features are supported, except for the Adaptive expressions prebuilt functions."
 authors = [{name = "Dion Olsthoorn", email = "dion.olsthoorn@gmail.com"}]
 readme = "README.md"

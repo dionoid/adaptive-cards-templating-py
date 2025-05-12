@@ -87,7 +87,8 @@ class Template:
         return re.sub(self.EXPRESSION_PATTERN, replacer, s)
     
     def _sanitize_expr(self, expr):
-        # replace $root, $host, $index with valid Python names
+        # replace $data, $root, $host, $index with valid Python names
+        expr = re.sub(r'\$data\b', '_data', expr)
         expr = re.sub(r'\$root\b', '_root', expr)
         expr = re.sub(r'\$index\b', '_index', expr)
         expr = re.sub(r'\$host\b', '_host', expr)
@@ -117,8 +118,10 @@ class Template:
     def _eval_expr(self, expr, data, root, host, index):
         expr_sanitized = self._sanitize_expr(expr.strip())
         local_scope = {}
+        # if data is a dictionary, expand its keys to local scope
         if isinstance(data, dict):
             local_scope.update(data)
+        local_scope['_data'] = data
         local_scope['_root'] = root
         local_scope['_index'] = index
         local_scope['_host'] = host
