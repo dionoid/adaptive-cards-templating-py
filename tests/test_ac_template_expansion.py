@@ -6,6 +6,7 @@ from src.adaptive_cards_templating_py import Template
 
 # Discover all template files in the tests/templates subfolder
 template_files = sorted(glob.glob('tests/templates/*.json'))
+# template_files = ['tests/templates/inputs_with_validation.json']
 
 @pytest.mark.parametrize("template_path", template_files)
 def test_adaptive_card_template_expansion(template_path):

@@ -73,7 +73,8 @@ class Template:
         if isinstance(data_expr, str):
             expr_match = re.fullmatch(self.EXPRESSION_PATTERN, data_expr.strip())
             if expr_match:
-                return self._eval_expr(expr_match.group(1), data, root, host, index)
+                eval_result = self._eval_expr(expr_match.group(1), data, root, host, index)
+                return eval_result
             else:
                 print (f"\n*** Invalid $data expression: {data_expr}")
                 return {}
@@ -100,7 +101,7 @@ class Template:
         expr = re.sub(r'\b&&\b', ' and ', expr)
         expr = re.sub(r'\b\|\|\b', ' or ', expr)
         expr = re.sub(r'\b!\b', ' not ', expr)
-        # santize Adaptive expressions prebuilt functions (although most are not supported)
+        # santize Adaptive expressions prebuilt functions
         expr = PrebuiltFunctions.sanitize_expr(expr)
         return expr
 
@@ -114,7 +115,7 @@ class Template:
         local_scope['_root'] = root
         local_scope['_index'] = index
         local_scope['_host'] = host
-        # Add prebuilt functions to local_scope
+        # Add Adaptive expressions prebuilt functions to local_scope
         PrebuiltFunctions.add_functions_to_scope(local_scope)
 
         try:

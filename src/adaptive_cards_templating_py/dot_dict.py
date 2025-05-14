@@ -1,7 +1,8 @@
 class DotDict(dict):
-    __getattr__ = dict.__getitem__
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
+    def __getattribute__(self, name):
+        if name in self:
+            return self[name]
+        return super().__getattribute__(name)
 
     def __init__(self, obj=None):
         obj = obj or {}
