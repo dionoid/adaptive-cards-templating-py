@@ -1,6 +1,7 @@
 import re
-import json
 from collections import defaultdict
+from .prebuilt_functions import PrebuiltFunctions
+from .dot_dict import DotDict
 
 class Template:
     EXPRESSION_PATTERN = r'\$\{([^\}]+)\}'
@@ -92,9 +93,6 @@ class Template:
         expr = re.sub(r'\$root\b', '_root', expr)
         expr = re.sub(r'\$index\b', '_index', expr)
         expr = re.sub(r'\$host\b', '_host', expr)
-        # support for if(,,) and json() functions
-        expr = re.sub(r'\bif\s*\(', '_if(', expr)
-        expr = re.sub(r'\bjson\s*\(', '_json(', expr)
         # support for boolean literals
         expr = re.sub(r'\bfalse\b', 'False', expr)
         expr = re.sub(r'\btrue\b', 'True', expr)
@@ -102,18 +100,9 @@ class Template:
         expr = re.sub(r'\b&&\b', ' and ', expr)
         expr = re.sub(r'\b\|\|\b', ' or ', expr)
         expr = re.sub(r'\b!\b', ' not ', expr)
-        # note: Adaptive expressions prebuilt functions are not supported
+        # santize Adaptive expressions prebuilt functions (although most are not supported)
+        expr = PrebuiltFunctions.sanitize_expr(expr)
         return expr
-    
-    # supports ${if(expr, a, b)}
-    @staticmethod
-    def _if_func(condition, true_val, false_val):
-        return true_val if condition else false_val
-    
-    # supports ${json(json_string).property}
-    @staticmethod
-    def _json_func(json_string):
-        return DotDict.wrap_object(json.loads(json_string))
 
     def _eval_expr(self, expr, data, root, host, index):
         expr_sanitized = self._sanitize_expr(expr.strip())
@@ -125,35 +114,15 @@ class Template:
         local_scope['_root'] = root
         local_scope['_index'] = index
         local_scope['_host'] = host
-        local_scope['_if'] = self._if_func
-        local_scope['_json'] = self._json_func
+        # Add prebuilt functions to local_scope
+        PrebuiltFunctions.add_functions_to_scope(local_scope)
+
         try:
             eval_result = eval(expr_sanitized, {"__builtins__": {}}, defaultdict(lambda: None, local_scope))
             if eval_result is None:
-                return f"${{{expr}}}" if self.undefined_field_value_substitution is None else self.undefined_field_value_substitution
+                return f"${{{expr}}}" if self.undefined_field_value_substitution else self.undefined_field_value_substitution
             return eval_result
         except Exception:
             print(f"\n*** Error evaluating expression: {expr} (sanitized: {expr_sanitized})")
             return f"${{{expr}}}" # Return the original expression if evaluation fails
         
-class DotDict(dict):
-    __getattr__ = dict.__getitem__
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
-
-    def __init__(self, obj=None):
-        obj = obj or {}
-        for key, value in obj.items():
-            self[key] = self.wrap_object(value)
-
-    @staticmethod
-    def wrap_object(obj):
-        if isinstance(obj, dict):
-            return DotDict(obj)
-        elif isinstance(obj, list):
-            return LengthList([DotDict.wrap_object(v) for v in obj])
-        return obj
-    
-class LengthList(list):
-    @property
-    def length(self): return len(self)
